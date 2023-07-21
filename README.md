@@ -1,0 +1,11 @@
+# Myrkur game in Lua with Love
+
+## How to run
+
+To run, download lua and the love framework, then run love.exe in the current folder:
+
+```
+love .
+```
+
+Note: you may have to specify the full path to the love executable if it is not on your path.
