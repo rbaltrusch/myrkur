@@ -13,6 +13,9 @@ function love.load()
     DEBUG_ENABLED = true
     DEFAULT_SCALING = 2
     WIDTH, HEIGHT, _ = love.window.getMode()
+    WIN_WIDTH, WIN_HEIGHT = love.window.getDesktopDimensions()
+    MAX_SCALING = DEFAULT_SCALING * math.min(WIN_WIDTH / WIDTH, WIN_HEIGHT / HEIGHT)
+    love.window.setIcon(love.image.newImageData("assets/runeM.png"))
 
     fps = 0
     muted = false
