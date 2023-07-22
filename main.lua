@@ -37,6 +37,9 @@ function love.load()
     tilemap = require "assets/largetestmap"
     tiles = TileMap.construct_tiles(tilemap, tileset)
 
+    crown_pickup_sound = love.audio.newSource("assets/CrownPickUp.mp3", "static")
+    crown_pickup_sound:setVolume(0.2)
+
     local music = love.audio.newSource("assets/myrkur_menu2.wav", "stream")
     music:setVolume(0.2)
     music:setPitch(0.5)
@@ -46,6 +49,7 @@ end
 
 local function collect_crown()
     player.inventory:add("crown")
+    crown_pickup_sound:play()
 end
 
 local function check_collectible_collisions()
