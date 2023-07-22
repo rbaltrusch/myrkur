@@ -20,6 +20,25 @@ function love.load()
 
     fps = 0
     muted = false
+
+    local music = love.audio.newSource("assets/myrkur_menu2.wav", "stream")
+    music:setVolume(0.2)
+    music:setPitch(0.5)
+    music:setLooping(true)
+    music:play()
+
+    crown_pickup_sound = love.audio.newSource("assets/crown.mp3", "static")
+    crown_pickup_sound:setVolume(0.2)
+
+    key_pickup_sound = love.audio.newSource("assets/key.mp3", "static")
+    key_pickup_sound:setVolume(0.2)
+
+    heart_pickup_sound = love.audio.newSource("assets/heart.mp3", "static")
+    heart_pickup_sound:setVolume(0.2)
+
+    local walk_sound = love.audio.newSource("assets/walk.wav", "static")
+    walk_sound:setVolume(0.2)
+
     player = Player.construct{
         image_path="assets/player.png",
         x=0,
@@ -30,21 +49,13 @@ function love.load()
         walk_animation=Animation.construct(
             SpriteSheet.load_sprite_sheet("assets/player_walk.png", TILE_SIZE, TILE_SIZE), 0.1
         ),
+        walk_sound=walk_sound
     }
     camera = Camera.construct{x=0, y=0, speed_factor=2.5, width=WIDTH/DEFAULT_SCALING, height=HEIGHT/DEFAULT_SCALING}
 
     tileset = SpriteSheet.load_sprite_sheet("assets/kenney_1-bit-pack/Tilesheet/colored_packed.png", TILE_SIZE, TILE_SIZE)
     tilemap = require "assets/largetestmap"
     tiles = TileMap.construct_tiles(tilemap, tileset)
-
-    crown_pickup_sound = love.audio.newSource("assets/CrownPickUp.mp3", "static")
-    crown_pickup_sound:setVolume(0.2)
-
-    local music = love.audio.newSource("assets/myrkur_menu2.wav", "stream")
-    music:setVolume(0.2)
-    music:setPitch(0.5)
-    music:setLooping(true)
-    music:play()
 end
 
 local function collect_crown()

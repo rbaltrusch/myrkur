@@ -14,6 +14,7 @@ function Player.construct(args)
         previous_x = args.x,
         previous_y = args.y,
         image = love.graphics.newImage(args.image_path),
+        walk_sound = args.walk_sound,
         speed_x = 0,
         speed_y = 0,
         inventory = Inventory.create(),
@@ -32,6 +33,10 @@ function Player.construct(args)
 
         if not self.walk_animation.ongoing then
             self.walk_animation:start()
+        end
+
+        if not self.walk_sound:isPlaying() then
+            self.walk_sound:play()
         end
 
         self.x = self.x + x
@@ -61,6 +66,9 @@ function Player.construct(args)
     function player.stop(self)
         self.speed_x = 0
         self.speed_y = 0
+        if self.walk_sound:isPlaying() then
+            self.walk_sound:stop()
+        end
     end
 
     function player.update(self, dt)
