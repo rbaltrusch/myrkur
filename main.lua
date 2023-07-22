@@ -40,6 +40,7 @@ function love.load()
     local music = love.audio.newSource("assets/myrkur_menu2.wav", "stream")
     music:setVolume(0.2)
     music:setPitch(0.5)
+    music:setLooping(true)
     music:play()
 end
 
