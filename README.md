@@ -1,4 +1,6 @@
-# Myrkur game in Lua with Love
+# Myrkur
+
+Myrkur, my game jam entry for the 48h Kenney jam 2023, written in Lua with the Love library.
 
 ## How to run
 
