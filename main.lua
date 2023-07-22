@@ -6,6 +6,7 @@ require "src/error_util"
 require "src/sprite_sheet"
 require "src/tilemap"
 require "src/camera"
+require "src/collision"
 
 function love.load()
     BACKGROUND_COLOUR = Colour.construct(71, 45, 60)
@@ -42,10 +43,36 @@ function love.load()
     music:play()
 end
 
+local function collect_crown()
+    player.inventory:add("crown")
+end
+
+local function check_collectible_collisions()
+    local collectible_callbacks = {
+        [142] = collect_crown,
+    }
+
+    local player_rect = player:get_rect()
+    local collectibles = TileMap.get_tile_rects(tiles["collectibles"].tiles, TILE_SIZE)
+    for pos, tile in pairs(collectibles) do
+        if Collision.colliding(player_rect, tile.rect) then
+            local x, y = unpack(pos)
+            -- ids are one higher here than in tiled
+            local callback = (
+                collectible_callbacks[tile.tile.index - 1]
+                or function() print("no collection callback", tile.tile.index - 1) end
+            )
+            callback()
+            tiles["collectibles"].tiles[x][y] = nil
+        end
+    end
+end
+
 local function update(dt)
     fps = 1 / dt
     player:update(dt)
     player:update_collisions(tiles["terrain"])
+    check_collectible_collisions()
     camera:update(player, dt)
 
     if love.keyboard.isDown("space") then
@@ -59,6 +86,7 @@ local function draw()
 
     --TileMap.render(tilemap, tileset, TILE_SIZE)
     TileMap.render_tiles(tiles["terrain"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
+    TileMap.render_tiles(tiles["collectibles"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
     player:render(camera)
     if DEBUG_ENABLED then
         love.graphics.print(string.format("fps: %s", math.floor(fps)), 0, 0, 0, 0.5, 0.5)
