@@ -31,8 +31,18 @@ skeleton
     attack
 
 take damage
+    animation
+    sound
 health
+    heal
+        animation
 respawn points
+
+collectibles moving up and down
+use pixel font
+
+fix hurt sound sometimes not playing
+fix skeletons getting stuck sometimes
 
 spikes
 doors

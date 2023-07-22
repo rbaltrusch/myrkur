@@ -7,6 +7,7 @@ precision mediump float;
 
 uniform vec2 u_light_pos;
 uniform vec2 u_resolution;
+uniform float u_factor;
 
 bool approx_equal(vec3 color1, vec3 color2) {
     float eps = 0.01;
@@ -25,5 +26,5 @@ vec4 effect(vec4 color, Image image, vec2 uvs, vec2 texture_coords) {
     float dist = distance(vec2(0.41, 0.51), texture_coords / u_resolution);
     float factor = dist > 0.8 ? 1 : 1 - pow(dist, 0.2);
     //float factor = (MAX_DIST - dist) / MAX_DIST;
-    return texture.rgba * factor;
+    return texture.rgba * factor * (1 - u_factor);
 }

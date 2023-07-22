@@ -13,8 +13,15 @@ function Player.construct(args)
         y = args.y,
         previous_x = args.x,
         previous_y = args.y,
+        health = args.health,
+        max_health = args.max_health,
+        invincible_timer = args.invincible_timer,
         image = love.graphics.newImage(args.image_path),
         walk_sound = args.walk_sound,
+        hurt_sound = args.hurt_sound,
+        death_sound = args.death_sound,
+        respawn_sound = args.respawn_sound,
+        health_bar = args.health_bar,
         speed_x = 0,
         speed_y = 0,
         inventory = Inventory.create(),
@@ -27,7 +34,7 @@ function Player.construct(args)
     }
 
     function player.move(self, x, y)
-        if x == 0 and y == 0 then
+        if x == 0 and y == 0 or not self:check_alive() then
             return
         end
 
@@ -73,6 +80,7 @@ function Player.construct(args)
 
     function player.update(self, dt)
         self.walk_animation:update(dt)
+        self.invincible_timer:update(dt)
 
         self.previous_x = self.x
         self.previous_y = self.y
@@ -94,8 +102,52 @@ function Player.construct(args)
         }
     end
 
-    function player.hurt(self, entity)
-        print("hurt", entity.damage)
+    function player.check_alive(self)
+        return self.health > 0
+    end
+
+    function player.respawn(self, health)
+        self.health = health
+        self.health_bar.amount = health
+        self.invincible_timer:start()
+        if not self.respawn_sound:isPlaying() then
+            self.respawn_sound:play()
+        end
+        print("respawned")
+    end
+
+    function player.die(self)
+        self.walk_sound:stop()
+        self.walk_animation:stop()
+        if not self.death_sound:isPlaying() then
+            self.death_sound:play()
+        end
+        print("died")
+    end
+
+    function player.heal(self, amount)
+        local health = math.min(self.health + amount, self.max_health)
+        if health > self.health then
+            self.health_bar:add(health - self.health)
+            self.health = health
+        end
+    end
+
+    function player.hurt(self, damage)
+        if damage <= 0 or self.invincible_timer:is_ongoing() or not self:check_alive() then
+            return
+        end
+
+        self.health_bar:add(- damage) -- HACK
+        self.health = self.health - damage
+        print("hurt", self.health)
+        if not self:check_alive() then
+            self:die()
+            return
+        end
+
+        self.hurt_sound:play()
+        self.invincible_timer:start()
     end
 
     function player.update_collisions(self, tiles)

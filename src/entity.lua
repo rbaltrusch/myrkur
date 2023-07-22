@@ -54,7 +54,7 @@ function Entity.construct(args)
         if path then
             self.target = path[#path - 1]
             if self.target == nil then --reached
-                player:hurt(self)
+                player:hurt(self.damage)
                 return
             end
         end

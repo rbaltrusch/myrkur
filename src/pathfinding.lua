@@ -6,7 +6,7 @@ function PathFinding.find_path(tile1, tile2, collision_map, max_range)
     if dist > max_range then
         local x1, y1 = unpack(tile1)
         local x2, y2 = unpack(tile2)
-        print(dist, x1, y1, x2, y2)
+        -- print(dist, x1, y1, x2, y2)
         return nil
     end
 
@@ -25,9 +25,5 @@ function PathFinding.find_path(tile1, tile2, collision_map, max_range)
         vec.y = vec.y - 1
     end
 
-    -- for _, v in ipairs(path or {}) do
-    --     print(v)
-    -- end
-    -- print("---")
     return path
 end

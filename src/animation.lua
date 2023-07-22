@@ -15,6 +15,10 @@ function Animation.construct(sprite_sheet, time_per_frame)
         self.ongoing = true
     end
 
+    function animation.stop(self)
+        self.ongoing = false
+    end
+
     function animation.update(self, dt)
         if not self.ongoing then
             return
