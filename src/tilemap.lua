@@ -30,18 +30,24 @@ function TileMap.construct_tiles(tilemap, tileset)
 end
 
 function TileMap.render_tiles(tiles, tileset, camera, tilesize, width, height)
-    local tiles_x = width / tilesize
-    local tiles_y = height / tilesize
+    local tiles_min_x = camera.total_x / tilesize - 1
+    local tiles_min_y = camera.total_y / tilesize - 1
+    local tiles_max_x = (width + camera.total_x) / tilesize
+    local tiles_max_y = (height + camera.total_y) / tilesize
 
     for x, col in pairs(tiles) do
-        if x > tiles_x then break end
+        if x < tiles_min_x then goto continuex end
+        if x > tiles_max_x then break end
         for y, quad in pairs(col) do
-            if y > tiles_y then break end
+            if y < tiles_min_y then goto continuey end
+            if y > tiles_max_y then break end
             local transform = love.math.newTransform(
                 x * tilesize - camera.total_x, y * tilesize - camera.total_y
             )
             love.graphics.draw(tileset.image, quad, transform)
+            ::continuey::
         end
+        ::continuex::
     end
 end
 
