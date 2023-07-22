@@ -2,31 +2,36 @@ TileMap = {}
 
 -- returns zero-indexed 2d table of tiles
 function TileMap.construct_tiles(tilemap, tileset)
-    local tiles = {}
-    for i = 0, tilemap.width do
-        tiles[i] = {}
+    local layers = {}
+    for _, layer in ipairs(tilemap.layers) do
+        local name = layer.name
+        layers[name] = {
+            tiles = {},
+            get = function(self, x, y)
+                local tiles_x = self.tiles[x]
+                return tiles_x ~= nil and tiles_x[y] or nil
+            end,
+        }
+        for i = 0, tilemap.width do
+            layers[name].tiles[i] = {}
+        end
     end
 
     local width = tilemap.width
     for _, layer in ipairs(tilemap.layers) do
+        local name = layer.name
         for i, tile_index in ipairs(layer.data) do
             if tile_index == 0 then goto continue end
     
             i = i - 1
             local x = i % width
             local y = math.floor(i / width)
-            tiles[x][y] = tileset.quads[tile_index]
+            layers[name].tiles[x][y] = tileset.quads[tile_index]
             ::continue::
         end
     end
 
-    return {
-        tiles = tiles,
-        get = function(self, x, y)
-            local tiles_x = self.tiles[x]
-            return tiles_x ~= nil and tiles_x[y] or nil
-        end,
-    }
+    return layers
 end
 
 function TileMap.render_tiles(tiles, tileset, camera, tilesize, width, height)

@@ -45,7 +45,7 @@ end
 local function update(dt)
     fps = 1 / dt
     player:update(dt)
-    player:update_collisions(tiles)
+    player:update_collisions(tiles["terrain"])
     camera:update(player, dt)
 
     if love.keyboard.isDown("space") then
@@ -58,7 +58,7 @@ local function draw()
     love.graphics.setBackgroundColor(unpack(BACKGROUND_COLOUR))
 
     --TileMap.render(tilemap, tileset, TILE_SIZE)
-    TileMap.render_tiles(tiles.tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
+    TileMap.render_tiles(tiles["terrain"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
     player:render(camera)
     if DEBUG_ENABLED then
         love.graphics.print(string.format("fps: %s", math.floor(fps)), 0, 0, 0, 0.5, 0.5)

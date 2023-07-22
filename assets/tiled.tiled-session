@@ -18,6 +18,14 @@
             "scaleInDock": 2,
             "scaleInEditor": 3
         },
+        "runeBlue_tile_sheet.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "runeBlue_tile_sheet_small.tsx": {
+            "scaleInDock": 3,
+            "scaleInEditor": 8
+        },
         "testmap.tmx": {
             "scale": 4.2096875,
             "selectedLayer": 0,
@@ -28,7 +36,7 @@
         }
     },
     "last.exportedFilePath": "D:/Alle_Dateien/Code/Lua/Myrkur/assets",
-    "last.imagePath": "D:/Alle_Dateien/Code/Lua/Myrkur/assets/kenney_1-bit-pack/Tilesheet",
+    "last.imagePath": "D:/Alle_Dateien/Code/Lua/Myrkur/assets",
     "map.height": 500,
     "map.lastUsedExportFilter": "Lua-Dateien (*.lua)",
     "map.lastUsedFormat": "tmx",
@@ -41,9 +49,11 @@
     ],
     "project": "tiled.tiled-project",
     "recentFiles": [
+        "runeBlue_tile_sheet_small.tsx",
+        "colored_packed.tsx",
+        "runeBlue_tile_sheet.tsx",
         "kenney_1-bit-pack/Tilemap/tileset_colored.tsx",
-        "testmap.tmx",
-        "colored_packed.tsx"
+        "testmap.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
