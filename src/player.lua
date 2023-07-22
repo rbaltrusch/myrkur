@@ -82,7 +82,7 @@ function Player.construct(args)
     function player.get_current_tile(self)
         local x = MathUtil.round(self.x / self.TILE_SIZE)
         local y = MathUtil.round(self.y / self.TILE_SIZE)
-        return x, y
+        return {x, y}
     end
 
     function player.get_rect(self)
@@ -94,8 +94,12 @@ function Player.construct(args)
         }
     end
 
+    function player.hurt(self, entity)
+        print("hurt", entity.damage)
+    end
+
     function player.update_collisions(self, tiles)
-        local x, y = self:get_current_tile()
+        local x, y = unpack(self:get_current_tile())
         for x_offs = -1, 1 do
             for y_offs = -1, 1 do
                 local tile = tiles:get(x + x_offs, y + y_offs)

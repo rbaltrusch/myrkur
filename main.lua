@@ -8,6 +8,8 @@ require "src/tilemap"
 require "src/camera"
 require "src/collision"
 require "src/file_util"
+require "src/pathfinding"
+require "src/entity"
 
 function love.load()
     --BACKGROUND_COLOUR = Colour.construct(71, 45, 60)
@@ -58,7 +60,12 @@ function love.load()
     shader = love.graphics.newShader(FileUtil.read_file("assets/shader/lighting.vert") or "")
     tileset = SpriteSheet.load_sprite_sheet("assets/kenney_1-bit-pack/Tilesheet/colored_packed.png", TILE_SIZE, TILE_SIZE)
     tilemap = require "assets/largetestmap"
+    collision_map = TileMap.construct_collision_map(tilemap, "terrain")
     tiles = TileMap.construct_tiles(tilemap, tileset)
+    entities = Entity.construct_from_tilemap(
+        tiles["enemies"].tiles,
+        {speed=30, TILE_SIZE=TILE_SIZE, tile_range=10, tileset=tileset, damage=1, walk_sound=walk_sound:clone()}
+    )
 end
 
 local function collect_crown()
@@ -87,7 +94,6 @@ local function check_collectible_collisions()
     local collectibles = TileMap.get_tile_rects(tiles["collectibles"].tiles, TILE_SIZE)
     for pos, tile in pairs(collectibles) do
         if Collision.colliding(player_rect, tile.rect) then
-            print(tile.tile.index, tile.rect.x1, tile.rect.x2, tile.rect.y1, tile.rect.y2)
             local x, y = unpack(pos)
             -- ids are one higher here than in tiled
             local callback = (
@@ -107,6 +113,19 @@ local function update(dt)
     check_collectible_collisions()
     camera:update(player, dt)
 
+    for _, entity in ipairs(entities) do
+        entity:update(dt, player, collision_map)
+    end
+
+    -- local x, y = player:get_current_tile()
+    -- print(x, y)
+    -- -- luafinding is 1-indexed
+    -- local path = PathFinding(Vector(x + 1, y + 1), Vector(1, 4), collision_map):GetPath()
+    -- for _, v in ipairs(path or {}) do
+    --     print(v)
+    -- end
+    -- print("---")
+
     if love.keyboard.isDown("space") then
     end
 end
@@ -117,14 +136,21 @@ local function draw()
     --shader:send("u_light_pos", {player.x - camera.total_x, player.y - camera.total_y})
     local width, height, _ = love.window.getMode()
     shader:send("u_resolution", {width, height})
-    print(player.x - camera.total_x, player.y - camera.total_y)
+    --print(player.x - camera.total_x, player.y - camera.total_y)
     love.graphics.setShader(shader)
     love.graphics.setBackgroundColor(unpack(BACKGROUND_COLOUR))
 
     --TileMap.render(tilemap, tileset, TILE_SIZE)
     TileMap.render_tiles(tiles["terrain"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
     TileMap.render_tiles(tiles["collectibles"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
+    --TileMap.render_tiles(tiles["enemies"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
     player:render(camera)
+
+    for _, entity in ipairs(entities) do
+        entity:render(camera)
+    end
+
+    love.graphics.setShader() --reset
     if DEBUG_ENABLED then
         love.graphics.print(string.format("fps: %s", math.floor(fps)), 0, 0, 0, 0.5, 0.5)
     end

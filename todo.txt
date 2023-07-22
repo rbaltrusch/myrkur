@@ -24,3 +24,15 @@ respawn points?
 map ?
 
 pick up 6 runes and bring to middle to win
+
+skeleton
+    walk
+    sound
+    attack
+
+take damage
+health
+respawn points
+
+spikes
+doors

@@ -55,6 +55,25 @@ function TileMap.construct_tiles(tilemap, tileset)
     return layers
 end
 
+-- for use with luafinding a 2d table of bools (passable or not)
+function TileMap.construct_collision_map(tilemap, layer_name)
+    local tiles = {}
+    local width = tilemap.width
+    for _, layer in ipairs(tilemap.layers) do
+        if layer.name ~= layer_name then goto continue end
+        for i = 0, tilemap.width do
+            tiles[i] = {}
+        end
+        for i, tile_index in ipairs(layer.data) do
+            local x = i % width
+            local y = math.floor(i / width)
+            tiles[x][y] = tile_index == 0 --passable if empty
+        end
+        ::continue::
+    end
+    return tiles
+end
+
 function TileMap.render_tiles(tiles, tileset, camera, tilesize, width, height)
     local tiles_min_x = camera.total_x / tilesize - 1
     local tiles_min_y = camera.total_y / tilesize - 1
