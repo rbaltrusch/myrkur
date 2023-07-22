@@ -7,9 +7,11 @@ require "src/sprite_sheet"
 require "src/tilemap"
 require "src/camera"
 require "src/collision"
+require "src/file_util"
 
 function love.load()
-    BACKGROUND_COLOUR = Colour.construct(71, 45, 60)
+    --BACKGROUND_COLOUR = Colour.construct(71, 45, 60)
+    BACKGROUND_COLOUR = Colour.construct(0, 0, 0)
     TILE_SIZE = 16
     DEBUG_ENABLED = true
     DEFAULT_SCALING = 2
@@ -53,6 +55,7 @@ function love.load()
     }
     camera = Camera.construct{x=0, y=0, speed_factor=2.5, width=WIDTH/DEFAULT_SCALING, height=HEIGHT/DEFAULT_SCALING}
 
+    shader = love.graphics.newShader(FileUtil.read_file("assets/shader/lighting.vert") or "")
     tileset = SpriteSheet.load_sprite_sheet("assets/kenney_1-bit-pack/Tilesheet/colored_packed.png", TILE_SIZE, TILE_SIZE)
     tilemap = require "assets/largetestmap"
     tiles = TileMap.construct_tiles(tilemap, tileset)
@@ -63,15 +66,28 @@ local function collect_crown()
     crown_pickup_sound:play()
 end
 
+local function collect_key()
+    player.inventory:add("key")
+    key_pickup_sound:play()
+end
+
+local function collect_heart()
+    player.inventory:add("heart")
+    heart_pickup_sound:play()
+end
+
 local function check_collectible_collisions()
     local collectible_callbacks = {
         [142] = collect_crown,
+        [571] = collect_key,
+        [529] = collect_heart,
     }
 
     local player_rect = player:get_rect()
     local collectibles = TileMap.get_tile_rects(tiles["collectibles"].tiles, TILE_SIZE)
     for pos, tile in pairs(collectibles) do
         if Collision.colliding(player_rect, tile.rect) then
+            print(tile.tile.index, tile.rect.x1, tile.rect.x2, tile.rect.y1, tile.rect.y2)
             local x, y = unpack(pos)
             -- ids are one higher here than in tiled
             local callback = (
@@ -98,6 +114,11 @@ end
 local function draw()
     local scaling = love.window.getFullscreen() and MAX_SCALING or DEFAULT_SCALING
     love.graphics.scale(scaling, scaling)
+    --shader:send("u_light_pos", {player.x - camera.total_x, player.y - camera.total_y})
+    local width, height, _ = love.window.getMode()
+    shader:send("u_resolution", {width, height})
+    print(player.x - camera.total_x, player.y - camera.total_y)
+    love.graphics.setShader(shader)
     love.graphics.setBackgroundColor(unpack(BACKGROUND_COLOUR))
 
     --TileMap.render(tilemap, tileset, TILE_SIZE)
