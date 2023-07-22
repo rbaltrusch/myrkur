@@ -117,12 +117,13 @@ function Player.construct(args)
         end
     end
 
-    function player.render(self)
+    function player.render(self, camera)
+        local transform = love.math.newTransform(self.x - camera.total_x, self.y - camera.total_y)
         if self.walk_animation.ongoing then
             local quad = self.walk_animation:get_current_quad()
-            love.graphics.draw(self.walk_animation.image, quad, self.x, self.y)
+            love.graphics.draw(self.walk_animation.image, quad, transform)
         else
-            love.graphics.draw(self.image, love.math.newTransform(self.x, self.y))
+            love.graphics.draw(self.image, transform)
         end
     end
 

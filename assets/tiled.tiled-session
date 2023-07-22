@@ -22,19 +22,19 @@
             "scale": 4.2096875,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 80.17222180981368,
+                "x": 80.40976913369458,
                 "y": 79.81590082399228
             }
         }
     },
     "last.exportedFilePath": "D:/Alle_Dateien/Code/Lua/Myrkur/assets",
     "last.imagePath": "D:/Alle_Dateien/Code/Lua/Myrkur/assets/kenney_1-bit-pack/Tilesheet",
-    "map.height": 10,
+    "map.height": 500,
     "map.lastUsedExportFilter": "Lua-Dateien (*.lua)",
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
-    "map.width": 10,
+    "map.width": 500,
     "openFiles": [
         "testmap.tmx",
         "kenney_1-bit-pack/Tilemap/tileset_colored.tsx"

@@ -29,10 +29,18 @@ function TileMap.construct_tiles(tilemap, tileset)
     }
 end
 
-function TileMap.render_tiles(tiles, tileset, tilesize)
+function TileMap.render_tiles(tiles, tileset, camera, tilesize, width, height)
+    local tiles_x = width / tilesize
+    local tiles_y = height / tilesize
+
     for x, col in pairs(tiles) do
+        if x > tiles_x then break end
         for y, quad in pairs(col) do
-            love.graphics.draw(tileset.image, quad, love.math.newTransform(x * tilesize, y * tilesize))
+            if y > tiles_y then break end
+            local transform = love.math.newTransform(
+                x * tilesize - camera.total_x, y * tilesize - camera.total_y
+            )
+            love.graphics.draw(tileset.image, quad, transform)
         end
     end
 end

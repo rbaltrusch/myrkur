@@ -5,6 +5,7 @@ require "src/animation"
 require "src/error_util"
 require "src/sprite_sheet"
 require "src/tilemap"
+require "src/camera"
 
 function love.load()
     BACKGROUND_COLOUR = Colour.construct(71, 45, 60)
@@ -14,6 +15,7 @@ function love.load()
     WIDTH, HEIGHT, _ = love.window.getMode()
 
     fps = 0
+    muted = false
     player = Player.construct{
         image_path="assets/player.png",
         x=0,
@@ -25,14 +27,14 @@ function love.load()
             SpriteSheet.load_sprite_sheet("assets/player_walk.png", TILE_SIZE, TILE_SIZE), 0.1
         ),
     }
-    muted = false
+    camera = Camera.construct{x=0, y=0, speed_factor=1, width=WIDTH/DEFAULT_SCALING, height=HEIGHT/DEFAULT_SCALING}
 
     tileset = SpriteSheet.load_sprite_sheet("assets/kenney_1-bit-pack/Tilesheet/colored_packed.png", TILE_SIZE, TILE_SIZE)
-    tilemap = require "assets/testmap"
+    tilemap = require "assets/largetestmap"
     tiles = TileMap.construct_tiles(tilemap, tileset)
 
-    local win_width, win_height = love.window.getDesktopDimensions()
-    MAX_SCALING = DEFAULT_SCALING * math.min(win_width / WIDTH, win_height / HEIGHT)
+    WIN_WIDTH, WIN_HEIGHT = love.window.getDesktopDimensions()
+    MAX_SCALING = DEFAULT_SCALING * math.min(WIN_WIDTH / WIDTH, WIN_HEIGHT / HEIGHT)
 end
 
 local function update(dt)
@@ -40,7 +42,9 @@ local function update(dt)
     player:update(dt)
     local x, y = player:get_current_tile()
     player:update_collisions(tiles)
-    print(x, y)
+    camera:update(player, dt)
+    print(camera.total_x, camera.total_y)
+    --print(x, y)
     if tiles:get(x, y) ~= nil then
         print("colliding")
     end
@@ -54,8 +58,8 @@ local function draw()
     love.graphics.setBackgroundColor(unpack(BACKGROUND_COLOUR))
 
     --TileMap.render(tilemap, tileset, TILE_SIZE)
-    TileMap.render_tiles(tiles.tiles, tileset, TILE_SIZE)
-    player:render()
+    TileMap.render_tiles(tiles.tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
+    player:render(camera)
     if DEBUG_ENABLED then
         love.graphics.print(string.format("fps: %s", math.floor(fps)), 0, 0, 0, 0.5, 0.5)
     end
