@@ -45,14 +45,9 @@ end
 local function update(dt)
     fps = 1 / dt
     player:update(dt)
-    local x, y = player:get_current_tile()
     player:update_collisions(tiles)
     camera:update(player, dt)
-    print(camera.total_x, camera.total_y)
-    --print(x, y)
-    if tiles:get(x, y) ~= nil then
-        print("colliding")
-    end
+
     if love.keyboard.isDown("space") then
     end
 end
