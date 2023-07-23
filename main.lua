@@ -24,7 +24,6 @@ function love.load()
     MAX_SCALING = DEFAULT_SCALING * math.min(WIN_WIDTH / WIDTH, WIN_HEIGHT / HEIGHT)
     love.window.setIcon(love.image.newImageData("assets/runeM.png"))
 
-    fps = 0
     muted = false
     death_time = 0
 
@@ -130,7 +129,6 @@ local function check_collectible_collisions()
 end
 
 local function update(dt)
-    fps = 1 / dt
     player:update(dt)
     player:update_collisions(tiles["terrain"])
     check_collectible_collisions()
@@ -191,7 +189,7 @@ local function draw()
 
     if DEBUG_ENABLED then
         love.graphics.setFont(font)
-        love.graphics.print(string.format("fps: %s", math.floor(fps)), 0, 0, 0, 0.5, 0.5)
+        love.graphics.print(string.format("fps: %s", math.floor(love.timer.getFPS())), 0, 0, 0, 0.5, 0.5)
     end
     -- love.graphics.circle("line", 50, 50, 10)
 end

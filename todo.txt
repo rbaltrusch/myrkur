@@ -1,17 +1,43 @@
-scuro oppuro
-myrkur
-
 explore a dark dungeon and collect 6 norse runes to win
 filled with monsters and traps
 no attack, only roll with i-frames and blocking
 
-inventory
-shop ?
 health pickups
-stamina
 
 respawn points?
     either on-site or campfire
+
+
+skeleton
+    walk
+    sound
+    attack
+
+take damage
+    animation
+health
+    heal
+        animation
+respawn points
+
+collectibles moving up and down
+
+fix hurt sound sometimes not playing
+fix skeletons getting stuck sometimes
+
+spikes
+doors
+
+
+-----------------
+DROPPED
+-----------------
+scuro oppuro
+
+inventory
+map ?
+shop ?
+stamina
 
 6 runes
     roll
@@ -21,28 +47,4 @@ respawn points?
     light torches
     unlock end
 
-map ?
-
 pick up 6 runes and bring to middle to win
-
-skeleton
-    walk
-    sound
-    attack
-
-take damage
-    animation
-    sound
-health
-    heal
-        animation
-respawn points
-
-collectibles moving up and down
-use pixel font
-
-fix hurt sound sometimes not playing
-fix skeletons getting stuck sometimes
-
-spikes
-doors
