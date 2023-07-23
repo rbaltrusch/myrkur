@@ -20,9 +20,6 @@ health
         animation
 respawn points
 
-collectibles moving up and down
-
-fix hurt sound sometimes not playing
 fix skeletons getting stuck sometimes
 
 spikes

@@ -146,6 +146,9 @@ function Player.construct(args)
             return
         end
 
+        if self.hurt_sound:isPlaying() then
+            self.hurt_sound:stop()
+        end
         self.hurt_sound:play()
         self.invincible_timer:start()
     end
