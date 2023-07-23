@@ -1,9 +1,3 @@
-health pickups
-
-respawn points?
-    either on-site or campfire
-
-
 skeleton
     walk
     sound
@@ -11,16 +5,24 @@ skeleton
 
 take damage
     animation
-health
-    heal
-        animation
+    death anim
+
+walk particle effects
+heal animation
+
 respawn points
+    either on-site or campfire
 
 fix skeletons getting stuck sometimes
 
 spikes
 doors
 
+menu
+map
+more music
+itch page
+exe
 
 -----------------
 DROPPED

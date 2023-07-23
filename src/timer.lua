@@ -9,6 +9,10 @@ function Timer.construct(delay)
         self.expired = false
     end
 
+    function timer.stop(self)
+        self.ongoing = false
+    end
+
     function timer.update(self, dt)
         if not self.ongoing then
             return

@@ -112,7 +112,7 @@ function love.load()
     tiles = TileMap.construct_tiles(tilemap, tileset)
     entities = Entity.construct_from_tilemap(
         tiles["enemies"].tiles,
-        {speed=30, TILE_SIZE=TILE_SIZE, tile_range=5, tileset=tileset, damage=1, walk_sound=walk_sound:clone()}
+        {speed=20, TILE_SIZE=TILE_SIZE, tile_range=5, tileset=tileset, damage=1, walk_sound=walk_sound:clone()}
     )
 
     crown_bar = CrownBar.construct{

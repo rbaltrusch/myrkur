@@ -4,6 +4,7 @@ require "src/math_util"
 require "src/collision"
 require "src/tilemap"
 require "src/inventory"
+require "src/timer"
 
 Player = {}
 
@@ -16,6 +17,7 @@ function Player.construct(args)
         health = args.health,
         max_health = args.max_health,
         invincible_timer = args.invincible_timer,
+        hurt_timer = Timer.construct(0.5),
         image = love.graphics.newImage(args.image_path),
         walk_sound = args.walk_sound,
         hurt_sound = args.hurt_sound,
@@ -81,6 +83,7 @@ function Player.construct(args)
     function player.update(self, dt)
         self.walk_animation:update(dt)
         self.invincible_timer:update(dt)
+        self.hurt_timer:update(dt)
 
         self.previous_x = self.x
         self.previous_y = self.y
@@ -138,11 +141,13 @@ function Player.construct(args)
             return
         end
 
+        self.hurt_timer:start()
         self.health_bar:add(- damage) -- HACK
         self.health = self.health - damage
         print("hurt", self.health)
         if not self:check_alive() then
             self:die()
+            self.hurt_timer:stop()
             return
         end
 
@@ -192,6 +197,10 @@ function Player.construct(args)
     end
 
     function player.render(self, camera)
+        if self.hurt_timer:is_ongoing() and math.sin(self.hurt_timer.time * 25) > 0 then
+            return
+        end
+
         local transform = love.math.newTransform(self.x - camera.total_x, self.y - camera.total_y)
         if self.walk_animation.ongoing then
             local quad = self.walk_animation:get_current_quad()
