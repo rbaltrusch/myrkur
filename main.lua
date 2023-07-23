@@ -12,6 +12,10 @@ require "src/pathfinding"
 require "src/entity"
 require "src/timer"
 require "src/stat_bar"
+require "src/crown_bar"
+
+CROWN = 142
+KEY = 571
 
 local function read_lighting_dist_from_config_file()
     for k, v in string.gmatch(FileUtil.read_file("config") or "", "(%w+)=(%w.%w+)") do
@@ -24,9 +28,12 @@ end
 
 local function count_total_crowns_on_map(tiles)
     local count = 0
-    for _, tile in ipairs(tiles) do
-        if tile.index == CROWN then
-            count = count + 1
+    for _, col in pairs(tiles) do
+        for _, tile in pairs(col) do
+            -- we are still offset by 1 here compared to the actual tile id...
+            if tile.index == CROWN + 1 then
+                count = count + 1
+            end
         end
     end
     return count
@@ -107,6 +114,13 @@ function love.load()
         tiles["enemies"].tiles,
         {speed=30, TILE_SIZE=TILE_SIZE, tile_range=5, tileset=tileset, damage=1, walk_sound=walk_sound:clone()}
     )
+
+    crown_bar = CrownBar.construct{
+        x=0,
+        y=0,
+        image=love.graphics.newImage("assets/crown.png"),
+        total_crowns_on_map=count_total_crowns_on_map(tiles["collectibles"].tiles)
+    }
 end
 
 local function collect_crown()
@@ -127,8 +141,8 @@ end
 
 local function check_collectible_collisions()
     local collectible_callbacks = {
-        [142] = collect_crown,
-        [571] = collect_key,
+        [CROWN] = collect_crown,
+        [KEY] = collect_key,
         [529] = collect_heart,
     }
 
@@ -200,17 +214,21 @@ local function draw()
 
     love.graphics.setShader() --reset
 
+    love.graphics.setFont(font)
     player.health_bar:render()
 
+    local text = crown_bar:get_text(player.inventory.items["crown"])
+    local text_width = font:getWidth(text)
+    love.graphics.printf(text, width/scaling - text_width - TILE_SIZE - 10, 10, 200, "left", 0, 1, 1)
+    love.graphics.draw(crown_bar.image, width/scaling - TILE_SIZE - 10, 10 - TILE_SIZE/4)
+
     if check_game_over() then
-        love.graphics.setFont(font)
         local text = "You died! Press R to respawn..."
         local text_width = font:getWidth(text)
         love.graphics.printf(text, width/2/scaling - text_width/2, height/2/scaling, 200, "left", 0, 1, 1)
     end
 
     if DEBUG_ENABLED then
-        love.graphics.setFont(font)
         love.graphics.print(string.format("fps: %s", math.floor(love.timer.getFPS())), 0, 0, 0, 0.5, 0.5)
     end
     -- love.graphics.circle("line", 50, 50, 10)

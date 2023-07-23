@@ -1,7 +1,3 @@
-explore a dark dungeon and collect 6 norse runes to win
-filled with monsters and traps
-no attack, only roll with i-frames and blocking
-
 health pickups
 
 respawn points?
@@ -45,3 +41,7 @@ stamina
     unlock end
 
 pick up 6 runes and bring to middle to win
+
+explore a dark dungeon and collect 6 norse runes to win
+filled with monsters and traps
+no attack, only roll with i-frames and blocking
