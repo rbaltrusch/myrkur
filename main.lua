@@ -98,6 +98,9 @@ function love.load()
         walk_animation=Animation.construct(
             SpriteSheet.load_sprite_sheet("assets/player_walk.png", TILE_SIZE, TILE_SIZE), 0.1
         ),
+        walk_left_animation=Animation.construct(
+            SpriteSheet.load_sprite_sheet("assets/player_walk_left.png", TILE_SIZE, TILE_SIZE), 0.2 -- WHY different ?
+        ),
         hurt_sound=hurt_sound,
         walk_sound=walk_sound,
         death_sound=death_sound,

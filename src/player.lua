@@ -30,8 +30,10 @@ function Player.construct(args)
         SPEED = args.speed,
         HITBOX_OFFSET = args.hitbox_offset,
         walk_animation = args.walk_animation,
+        walk_left_animation = args.walk_left_animation,
         TILE_SIZE = args.tile_size,
         last_rest_site = {args.x, args.y},
+        looking_right = true,
         -- how forgiving terrain edge collisions are
         EDGE_LENIENCE = 7,
     }
@@ -41,8 +43,8 @@ function Player.construct(args)
             return
         end
 
-        if not self.walk_animation.ongoing then
-            self.walk_animation:start()
+        if not self:get_walk_animation().ongoing then
+            self:get_walk_animation():start()
         end
 
         if not self.walk_sound:isPlaying() then
@@ -54,11 +56,15 @@ function Player.construct(args)
     end
 
     function player.start_move_left(self)
+        self.looking_right = false
+        self.walk_animation:stop()
         self.speed_x = - self.SPEED
         self.speed_y = 0
     end
 
     function player.start_move_right(self)
+        self.looking_right = true
+        self.walk_left_animation:stop()
         self.speed_x = self.SPEED
         self.speed_y = 0
     end
@@ -81,8 +87,13 @@ function Player.construct(args)
         end
     end
 
+    function player.get_walk_animation(self)
+        return self.looking_right and self.walk_animation or self.walk_left_animation
+    end
+
     function player.update(self, dt)
-        self.walk_animation:update(dt)
+        self:get_walk_animation():update(dt)
+        self.walk_left_animation:update(dt)
         self.invincible_timer:update(dt)
         self.hurt_timer:update(dt)
 
@@ -124,7 +135,7 @@ function Player.construct(args)
 
     function player.die(self)
         self.walk_sound:stop()
-        self.walk_animation:stop()
+        self:get_walk_animation():stop()
         if not self.death_sound:isPlaying() then
             self.death_sound:play()
         end
@@ -205,9 +216,10 @@ function Player.construct(args)
         end
 
         local transform = love.math.newTransform(self.x - camera.total_x, self.y - camera.total_y)
-        if self.walk_animation.ongoing then
-            local quad = self.walk_animation:get_current_quad()
-            love.graphics.draw(self.walk_animation.image, quad, transform)
+        local anim = self:get_walk_animation()
+        if anim.ongoing then
+            local quad = anim:get_current_quad()
+            love.graphics.draw(anim.image, quad, transform)
         else
             love.graphics.draw(self.image, transform)
         end
