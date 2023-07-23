@@ -178,8 +178,9 @@ local function draw()
     love.graphics.setBackgroundColor(unpack(BACKGROUND_COLOUR))
 
     --TileMap.render(tilemap, tileset, TILE_SIZE)
+    local x_offset = math.sin(love.timer.getTime() * 5) * 1.5
     TileMap.render_tiles(tiles["terrain"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
-    TileMap.render_tiles(tiles["collectibles"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
+    TileMap.render_tiles(tiles["collectibles"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT, x_offset)
     --TileMap.render_tiles(tiles["enemies"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
     player:render(camera)
 

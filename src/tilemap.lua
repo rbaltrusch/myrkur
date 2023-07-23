@@ -74,7 +74,9 @@ function TileMap.construct_collision_map(tilemap, layer_name)
     return tiles
 end
 
-function TileMap.render_tiles(tiles, tileset, camera, tilesize, width, height)
+-- offset is optional
+function TileMap.render_tiles(tiles, tileset, camera, tilesize, width, height, y_offset)
+    y_offset = y_offset or 0
     local tiles_min_x = camera.total_x / tilesize - 1
     local tiles_min_y = camera.total_y / tilesize - 1
     local tiles_max_x = (width + camera.total_x) / tilesize
@@ -87,7 +89,7 @@ function TileMap.render_tiles(tiles, tileset, camera, tilesize, width, height)
             if y < tiles_min_y or tile == nil then goto continuey end
             if y > tiles_max_y then break end
             local transform = love.math.newTransform(
-                x * tilesize - camera.total_x, y * tilesize - camera.total_y
+                x * tilesize - camera.total_x, y * tilesize - camera.total_y + y_offset
             )
             love.graphics.draw(tileset.image, tile.quad, transform)
             ::continuey::
