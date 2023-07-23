@@ -22,13 +22,23 @@ local function read_lighting_dist_from_config_file()
     return nil
 end
 
+local function count_total_crowns_on_map(tiles)
+    local count = 0
+    for _, tile in ipairs(tiles) do
+        if tile.index == CROWN then
+            count = count + 1
+        end
+    end
+    return count
+end
+
 function love.load()
     --BACKGROUND_COLOUR = Colour.construct(71, 45, 60)
     BACKGROUND_COLOUR = Colour.construct(0, 0, 0)
     TILE_SIZE = 16
     DEBUG_ENABLED = true
     DEFAULT_SCALING = 2
-    WIDTH, HEIGHT, _ = love.window.getMode()
+    WIDTH, HEIGHT = 480, 320
     WIN_WIDTH, WIN_HEIGHT = love.window.getDesktopDimensions()
     MAX_SCALING = DEFAULT_SCALING * math.min(WIN_WIDTH / WIDTH, WIN_HEIGHT / HEIGHT)
     love.window.setIcon(love.image.newImageData("assets/runeM.png"))
