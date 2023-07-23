@@ -13,6 +13,15 @@ require "src/entity"
 require "src/timer"
 require "src/stat_bar"
 
+local function read_lighting_dist_from_config_file()
+    for k, v in string.gmatch(FileUtil.read_file("config") or "", "(%w+)=(%w.%w+)") do
+        if k == "lightingDist" then
+            return v
+        end
+    end
+    return nil
+end
+
 function love.load()
     --BACKGROUND_COLOUR = Colour.construct(71, 45, 60)
     BACKGROUND_COLOUR = Colour.construct(0, 0, 0)
@@ -26,6 +35,7 @@ function love.load()
 
     muted = false
     death_time = 0
+    lighting_dist = read_lighting_dist_from_config_file() or 0.45
 
     local music = love.audio.newSource("assets/myrkur_menu2.wav", "stream")
     music:setVolume(0.2)
@@ -163,6 +173,7 @@ local function draw()
     shader:send("u_resolution", {width, height})
     shader:send("u_factor", math.min(0.3, death_time / 4))
     shader:send("u_time", love.timer.getTime())
+    shader:send("u_lighting_dist", lighting_dist)
     love.graphics.setShader(shader)
     love.graphics.setBackgroundColor(unpack(BACKGROUND_COLOUR))
 

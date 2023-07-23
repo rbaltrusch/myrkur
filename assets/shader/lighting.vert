@@ -9,6 +9,7 @@ uniform vec2 u_light_pos;
 uniform vec2 u_resolution;
 uniform float u_factor;
 uniform float u_time;
+uniform float u_lighting_dist; // intended around 0.3, exposed as a config param so people with visibility issues can increase
 
 bool approx_equal(vec3 color1, vec3 color2) {
     float eps = 0.01;
@@ -24,8 +25,9 @@ vec4 effect(vec4 color, Image image, vec2 uvs, vec2 texture_coords) {
     }
 
     //float dist = distance(u_light_pos / u_resolution, texture_coords / u_resolution);
-    float dist = distance(vec2(0.41, 0.51), texture_coords / u_resolution);
-    float factor = dist > 0.8 ? 1 : 1 - pow(dist, 0.3 + 0.03 * sin(u_time * 3));
+    vec2 middle = vec2(0.41, 0.51); // approximately where character is
+    float dist = distance(middle, texture_coords / u_resolution);
+    float factor = 1 - pow(dist, u_lighting_dist + 0.03 * sin(u_time * 3));
     float total_factor = factor * (1 - u_factor);
     //float factor = (MAX_DIST - dist) / MAX_DIST;
 
