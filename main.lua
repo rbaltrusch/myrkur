@@ -135,7 +135,7 @@ local function remove_collectible(x, y)
 end
 
 local function collect_rest_site(x, y)
-    player.last_rest_site = {x * TILE_SIZE, y * TILE_SIZE}
+    player.last_rest_site = {x = x * TILE_SIZE, y = y * TILE_SIZE}
     rest_sound:play()
 end
 
@@ -229,7 +229,6 @@ local function draw()
     TileMap.render(tiles["terrain"].tiles, tileset, camera, TILE_SIZE)
     TileMap.render(tiles["decor"].tiles, tileset, camera, TILE_SIZE)
     TileMap.render(tiles["collectibles"].tiles, tileset, camera, TILE_SIZE, x_offset)
-    TileMap.render(tiles["enemies"].tiles, tileset, camera, TILE_SIZE)
     player:render(camera)
 
     for _, entity in ipairs(entities) do

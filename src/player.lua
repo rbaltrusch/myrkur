@@ -32,7 +32,7 @@ function Player.construct(args)
         walk_animation = args.walk_animation,
         walk_left_animation = args.walk_left_animation,
         TILE_SIZE = args.tile_size,
-        last_rest_site = {args.x, args.y},
+        last_rest_site = {x = args.x, y = args.y},
         looking_right = true,
         -- how forgiving terrain edge collisions are
         EDGE_LENIENCE = 7,
