@@ -43,7 +43,7 @@ function love.load()
     --BACKGROUND_COLOUR = Colour.construct(71, 45, 60)
     BACKGROUND_COLOUR = Colour.construct(0, 0, 0)
     TILE_SIZE = 16
-    DEBUG_ENABLED = true
+    DEBUG_ENABLED = false
     DEFAULT_SCALING = 2
     WIDTH, HEIGHT = 480, 320
     WIN_WIDTH, WIN_HEIGHT = love.window.getDesktopDimensions()
@@ -85,6 +85,9 @@ function love.load()
     local respawn_sound = love.audio.newSource("assets/respawn.wav", "static")
     respawn_sound:setVolume(0.4)
 
+    local unlock_sound = love.audio.newSource("assets/unlock.wav", "static")
+    unlock_sound:setVolume(0.4)
+
     player = Player.construct{
         image_path="assets/player.png",
         x=98 * TILE_SIZE,
@@ -105,6 +108,7 @@ function love.load()
         walk_sound=walk_sound,
         death_sound=death_sound,
         respawn_sound=respawn_sound,
+        unlock_sound=unlock_sound,
         health_bar=StatBar.construct{
             amount=3, x=5, y=10-TILE_SIZE/4, tile_size=TILE_SIZE, image=love.graphics.newImage("assets/heart.png")
         },
@@ -135,7 +139,12 @@ local function remove_collectible(x, y)
 end
 
 local function collect_rest_site(x, y)
-    player.last_rest_site = {x = x * TILE_SIZE, y = y * TILE_SIZE}
+    x = x * TILE_SIZE
+    y = y * TILE_SIZE
+    if player.last_rest_site.x == x and player.last_rest_site.y == y then
+        return
+    end
+    player.last_rest_site = {x = x, y = y}
     rest_sound:play()
 end
 

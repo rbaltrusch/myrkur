@@ -23,6 +23,7 @@ function Player.construct(args)
         hurt_sound = args.hurt_sound,
         death_sound = args.death_sound,
         respawn_sound = args.respawn_sound,
+        unlock_sound = args.unlock_sound,
         health_bar = args.health_bar,
         speed_x = 0,
         speed_y = 0,
@@ -183,6 +184,16 @@ function Player.construct(args)
 
                 local tile_rect = TileMap.get_tile_rect(x + x_offs, y + y_offs, self.TILE_SIZE)
                 local player_rect = player:get_rect()
+
+                -- HACK - open doors
+                local DOOR = 539
+                if tile.index - 1 == DOOR and (self.inventory.items["key"] or 0) > 0 then
+                    tiles.tiles[x + x_offs][y + y_offs] = nil -- remove door
+                    self.unlock_sound:play()
+                    self.inventory.items["key"] = self.inventory.items["key"] - 1
+                    goto continue
+                end
+
                 if Collision.colliding(player_rect, tile_rect) then
                     local speed_x = self.x - self.previous_x
                     local speed_y = self.y - self.previous_y

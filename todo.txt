@@ -16,6 +16,8 @@ fix skeletons getting stuck sometimes
 spikes
 doors
 
+disable enemies for some time when respawning
+
 menu
 map
 more music
