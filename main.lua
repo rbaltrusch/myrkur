@@ -52,7 +52,8 @@ function love.load()
 
     muted = false
     death_time = 0
-    lighting_dist = read_lighting_dist_from_config_file() or 0.45
+    lighting_dist = read_lighting_dist_from_config_file() or 0.65
+    won = false
 
     local music = love.audio.newSource("assets/myrkur_menu2.wav", "stream")
     music:setVolume(0.2)
@@ -116,7 +117,8 @@ function love.load()
     camera = Camera.construct{x=0, y=0, speed_factor=2.5, width=WIDTH/DEFAULT_SCALING, height=HEIGHT/DEFAULT_SCALING}
     font = love.graphics.newFont("assets/KenneyPixel.ttf")
 
-    shader = love.graphics.newShader(FileUtil.read_file("assets/shader/lighting.vert") or "")
+    --shader = love.graphics.newShader(FileUtil.read_file("assets/shader/lighting.vert") or "")
+    shader = love.graphics.newShader(require("src/shader"))
     tileset = SpriteSheet.load_sprite_sheet("assets/kenney_1-bit-pack/Tilesheet/colored_packed.png", TILE_SIZE, TILE_SIZE)
     tilemap = require "assets/map"
     collision_map = TileMap.construct_collision_map(tilemap, "terrain")
@@ -196,6 +198,11 @@ local function update(dt)
     check_collectible_collisions()
     camera:update(player, dt)
 
+    if won or crown_bar:check_complete(player.inventory.items["crown"]) then
+        won = true
+        return
+    end
+
     for _, entity in ipairs(entities) do
         entity:update(dt, player, collision_map)
     end
@@ -254,8 +261,14 @@ local function draw()
     love.graphics.printf(text, width/scaling - text_width - TILE_SIZE - 10, 10, 200, "left", 0, 1, 1)
     love.graphics.draw(crown_bar.image, width/scaling - TILE_SIZE - 10, 10 - TILE_SIZE/4)
 
+    if won then
+        local text = "You won!"
+        local text_width = font:getWidth(text)
+        love.graphics.printf(text, width/2/scaling - text_width/2, height/2/scaling, 200, "left", 0, 1, 1)
+    end
+
     if check_game_over() then
-        local text = "You died! Press R to respawn..."
+        local text = "You died! Press r to respawn..."
         local text_width = font:getWidth(text)
         love.graphics.printf(text, width/2/scaling - text_width/2, height/2/scaling, 200, "left", 0, 1, 1)
     end
@@ -294,13 +307,13 @@ function love.keypressed(key)
         respawn()
     end
 
-    if key == "left" then
+    if key == "left" or key == "a" then
         player:start_move_left()
-    elseif key == "right" then
+    elseif key == "right" or key == "d" then
         player:start_move_right()
-    elseif key == "up" then
+    elseif key == "up" or key == "w" then
         player:start_move_up()
-    elseif key == "down" then
+    elseif key == "down" or key == "s" then
         player:start_move_down()
     end
 end
@@ -311,6 +324,10 @@ local function handle_player_stop_walk(key)
         ["right"] = player.start_move_right,
         ["up"] = player.start_move_up,
         ["down"] = player.start_move_down,
+        ["a"] = player.start_move_left,
+        ["d"] = player.start_move_right,
+        ["w"] = player.start_move_up,
+        ["s"] = player.start_move_down,
     }
     for key_, _ in pairs(keys) do
         if key_ ~= key then goto continue end
