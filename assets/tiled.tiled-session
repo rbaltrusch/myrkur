@@ -3,11 +3,11 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "testmap.tmx",
+    "activeFile": "map.tmx",
     "expandedProjectPaths": [
+        "kenney_1-bit-pack",
         "kenney_1-bit-pack/Tilemap",
-        ".",
-        "kenney_1-bit-pack"
+        "."
     ],
     "fileStates": {
         "colored_packed.tsx": {
@@ -16,14 +16,14 @@
         },
         "kenney_1-bit-pack/Tilemap/tileset_colored.tsx": {
             "scaleInDock": 2,
-            "scaleInEditor": 3
+            "scaleInEditor": 1.5
         },
         "map.tmx": {
-            "scale": 2,
-            "selectedLayer": 2,
+            "scale": 0.5,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 1574.5,
-                "y": 242
+                "x": 1452,
+                "y": 890
             }
         },
         "runeBlue_tile_sheet.tsx": {
@@ -35,11 +35,11 @@
             "scaleInEditor": 8
         },
         "testmap.tmx": {
-            "scale": 1,
+            "scale": 4.2096875,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 231,
-                "y": 409
+                "x": 3999.9406131690293,
+                "y": 3999.7030658451486
             }
         }
     },
@@ -53,15 +53,17 @@
     "map.width": 200,
     "openFiles": [
         "testmap.tmx",
-        "kenney_1-bit-pack/Tilemap/tileset_colored.tsx"
+        "kenney_1-bit-pack/Tilemap/tileset_colored.tsx",
+        "map.tmx"
     ],
     "project": "tiled.tiled-project",
     "recentFiles": [
         "testmap.tmx",
+        "kenney_1-bit-pack/Tilemap/tileset_colored.tsx",
+        "map.tmx",
         "runeBlue_tile_sheet_small.tsx",
         "colored_packed.tsx",
-        "runeBlue_tile_sheet.tsx",
-        "kenney_1-bit-pack/Tilemap/tileset_colored.tsx"
+        "runeBlue_tile_sheet.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
