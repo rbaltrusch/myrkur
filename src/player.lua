@@ -31,8 +31,9 @@ function Player.construct(args)
         HITBOX_OFFSET = args.hitbox_offset,
         walk_animation = args.walk_animation,
         TILE_SIZE = args.tile_size,
+        last_rest_site = {args.x, args.y},
         -- how forgiving terrain edge collisions are
-        EDGE_LENIENCE = 7
+        EDGE_LENIENCE = 7,
     }
 
     function player.move(self, x, y)
@@ -110,6 +111,8 @@ function Player.construct(args)
     end
 
     function player.respawn(self, health)
+        self.x = self.last_rest_site.x
+        self.y = self.last_rest_site.y
         self.health = health
         self.health_bar.amount = health
         self.invincible_timer:start()

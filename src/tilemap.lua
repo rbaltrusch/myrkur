@@ -77,10 +77,10 @@ end
 -- offset is optional
 function TileMap.render_tiles(tiles, tileset, camera, tilesize, width, height, y_offset)
     y_offset = y_offset or 0
-    local tiles_min_x = camera.total_x / tilesize - 1
-    local tiles_min_y = camera.total_y / tilesize - 1
-    local tiles_max_x = (width + camera.total_x) / tilesize
-    local tiles_max_y = (height + camera.total_y) / tilesize
+    local tiles_min_x = camera.total_x / tilesize - 100
+    local tiles_min_y = camera.total_y / tilesize - 100
+    local tiles_max_x = (width + camera.total_x) / tilesize + 100
+    local tiles_max_y = (height + camera.total_y) / tilesize + 100
 
     for x, col in pairs(tiles) do
         if x < tiles_min_x then goto continuex end
@@ -98,16 +98,14 @@ function TileMap.render_tiles(tiles, tileset, camera, tilesize, width, height, y
     end
 end
 
-function TileMap.render(tilemap, tileset, tilesize)
-    local width = tilemap.width
-    for _, layer in ipairs(tilemap.layers) do
-        for i, tile_index in ipairs(layer.data) do
-            if tile_index == 0 then goto continue end
-
-            i = i - 1
-            local x = i % width * tilesize
-            local y = math.floor(i / width) * tilesize
-            love.graphics.draw(tileset.image, tileset.quads[tile_index], love.math.newTransform(x, y))
+function TileMap.render(tiles, tileset, camera, tilesize, y_offset)
+    y_offset = y_offset or 0
+    for x, col in pairs(tiles) do
+        for y, tile in pairs(col) do
+            local transform = love.math.newTransform(
+                x * tilesize - camera.total_x, y * tilesize - camera.total_y + y_offset
+            )
+            love.graphics.draw(tileset.image, tile.quad, transform)
             ::continue::
         end
     end

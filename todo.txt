@@ -1,10 +1,8 @@
 skeleton
-    walk
-    sound
+    walk anim
     attack
 
 take damage
-    animation
     death anim
 
 walk particle effects

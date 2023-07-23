@@ -69,6 +69,10 @@ function love.load()
     heart_pickup_sound = love.audio.newSource("assets/heart.mp3", "static")
     heart_pickup_sound:setVolume(0.2)
 
+    rest_sound = love.audio.newSource("assets/rest.wav", "static")
+    rest_sound:setVolume(0.5)
+    rest_sound:setPitch(0.5)
+
     local walk_sound = love.audio.newSource("assets/walk.wav", "static")
     walk_sound:setVolume(0.2)
 
@@ -83,8 +87,8 @@ function love.load()
 
     player = Player.construct{
         image_path="assets/player.png",
-        x=0,
-        y=0,
+        x=98 * TILE_SIZE,
+        y=2 * TILE_SIZE,
         speed=80,
         health=3,
         max_health=5,
@@ -99,7 +103,7 @@ function love.load()
         death_sound=death_sound,
         respawn_sound=respawn_sound,
         health_bar=StatBar.construct{
-            amount=3, x=10, y=10, tile_size=TILE_SIZE, image=love.graphics.newImage("assets/heart.png")
+            amount=3, x=5, y=10-TILE_SIZE/4, tile_size=TILE_SIZE, image=love.graphics.newImage("assets/heart.png")
         },
     }
     camera = Camera.construct{x=0, y=0, speed_factor=2.5, width=WIDTH/DEFAULT_SCALING, height=HEIGHT/DEFAULT_SCALING}
@@ -107,7 +111,7 @@ function love.load()
 
     shader = love.graphics.newShader(FileUtil.read_file("assets/shader/lighting.vert") or "")
     tileset = SpriteSheet.load_sprite_sheet("assets/kenney_1-bit-pack/Tilesheet/colored_packed.png", TILE_SIZE, TILE_SIZE)
-    tilemap = require "assets/largetestmap"
+    tilemap = require "assets/map"
     collision_map = TileMap.construct_collision_map(tilemap, "terrain")
     tiles = TileMap.construct_tiles(tilemap, tileset)
     entities = Entity.construct_from_tilemap(
@@ -123,20 +127,32 @@ function love.load()
     }
 end
 
-local function collect_crown()
+local function remove_collectible(x, y)
+    tiles["collectibles"].tiles[x][y] = nil
+end
+
+local function collect_rest_site(x, y)
+    player.last_rest_site = {x * TILE_SIZE, y * TILE_SIZE}
+    rest_sound:play()
+end
+
+local function collect_crown(x, y)
     player.inventory:add("crown")
     crown_pickup_sound:play()
+    remove_collectible(x, y)
 end
 
-local function collect_key()
+local function collect_key(x, y)
     player.inventory:add("key")
     key_pickup_sound:play()
+    remove_collectible(x, y)
 end
 
-local function collect_heart()
+local function collect_heart(x, y)
     player.inventory:add("heart")
     player:heal(1)
     heart_pickup_sound:play()
+    remove_collectible(x, y)
 end
 
 local function check_collectible_collisions()
@@ -144,6 +160,7 @@ local function check_collectible_collisions()
         [CROWN] = collect_crown,
         [KEY] = collect_key,
         [529] = collect_heart,
+        [504] = collect_rest_site,
     }
 
     local player_rect = player:get_rect()
@@ -156,8 +173,7 @@ local function check_collectible_collisions()
                 collectible_callbacks[tile.tile.index - 1]
                 or function() print("no collection callback", tile.tile.index - 1) end
             )
-            callback()
-            tiles["collectibles"].tiles[x][y] = nil
+            callback(x, y)
         end
     end
 end
@@ -203,9 +219,14 @@ local function draw()
 
     --TileMap.render(tilemap, tileset, TILE_SIZE)
     local x_offset = math.sin(love.timer.getTime() * 5) * 1.5
-    TileMap.render_tiles(tiles["terrain"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
-    TileMap.render_tiles(tiles["collectibles"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT, x_offset)
+    --TileMap.render_tiles(tiles["terrain"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
+    --TileMap.render_tiles(tiles["decor"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
+    --TileMap.render_tiles(tiles["collectibles"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT, x_offset)
     --TileMap.render_tiles(tiles["enemies"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
+    TileMap.render(tiles["terrain"].tiles, tileset, camera, TILE_SIZE)
+    TileMap.render(tiles["decor"].tiles, tileset, camera, TILE_SIZE)
+    TileMap.render(tiles["collectibles"].tiles, tileset, camera, TILE_SIZE, x_offset)
+    TileMap.render(tiles["enemies"].tiles, tileset, camera, TILE_SIZE)
     player:render(camera)
 
     for _, entity in ipairs(entities) do
