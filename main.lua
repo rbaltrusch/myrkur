@@ -164,6 +164,7 @@ local function draw()
     local width, height, _ = love.window.getMode()
     shader:send("u_resolution", {width, height})
     shader:send("u_factor", math.min(0.3, death_time / 4))
+    shader:send("u_time", love.timer.getTime())
     love.graphics.setShader(shader)
     love.graphics.setBackgroundColor(unpack(BACKGROUND_COLOUR))
 
