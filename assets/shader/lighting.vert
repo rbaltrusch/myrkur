@@ -21,7 +21,7 @@ vec4 effect(vec4 color, Image image, vec2 uvs, vec2 texture_coords) {
     vec4 texture = Texel(image, uvs);
     // set tile background colour 71, 45, 60 to black
     if (approx_equal(texture.rgb, vec3(0.278, 0.176, 0.235))) {
-        return vec4(0.0, 0.0, 0.0, 1.0);
+        return vec4(0.0, 0.0, 0.0, 0.0);
     }
 
     //float dist = distance(u_light_pos / u_resolution, texture_coords / u_resolution);
