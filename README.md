@@ -1,4 +1,4 @@
-![Myrkur](assets/banner2.png)
+![Myrkur](assets/banner_github.png)
 
 Myrkur is a game in which you, a little powerless blue blob, explore an open world to collect all the crowns left behind in the desolate wastelands of a kingdom long gone by...
 
