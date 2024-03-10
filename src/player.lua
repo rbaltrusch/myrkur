@@ -25,6 +25,7 @@ function Player.construct(args)
         respawn_sound = args.respawn_sound,
         unlock_sound = args.unlock_sound,
         health_bar = args.health_bar,
+        slowed = false,
         speed_x = 0,
         speed_y = 0,
         inventory = Inventory.create(),
@@ -80,6 +81,10 @@ function Player.construct(args)
         self.speed_y = self.SPEED
     end
 
+    function player.get_move_speed_factor(self)
+        return self.slowed and 0.33 or 1
+    end
+
     function player.stop(self)
         self.speed_x = 0
         self.speed_y = 0
@@ -100,7 +105,8 @@ function Player.construct(args)
 
         self.previous_x = self.x
         self.previous_y = self.y
-        self:move(self.speed_x * dt, self.speed_y * dt)
+        local factor = dt * self:get_move_speed_factor()
+        self:move(self.speed_x * factor, self.speed_y * factor)
     end
 
     function player.get_current_tile(self)

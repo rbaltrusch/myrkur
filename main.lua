@@ -216,6 +216,8 @@ local function check_collisions(tiles, index, callback)
 end
 
 local function update(dt)
+    player.slowed = false
+    check_collisions(tiles["decor"], 738, function() player.slowed = true end)  -- cobweb
     player:update(dt)
     player:update_collisions(tiles["terrain"])
     check_collectible_collisions()
