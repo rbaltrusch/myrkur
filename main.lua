@@ -200,10 +200,26 @@ local function check_collectible_collisions()
     end
 end
 
+local function check_collisions(tiles, index, callback)
+    local player_rect = player:get_rect()
+    local x, y = unpack(player:get_current_tile())
+    for x_offs = -1, 1 do
+        for y_offs = -1, 1 do
+            local tile = tiles:get(x + x_offs, y + y_offs)
+
+            local tile_rect = TileMap.get_tile_rect(x + x_offs, y + y_offs, TILE_SIZE)
+            if tile and tile.index == index and Collision.colliding(player_rect, tile_rect) then
+                callback()
+            end
+        end
+    end
+end
+
 local function update(dt)
     player:update(dt)
     player:update_collisions(tiles["terrain"])
     check_collectible_collisions()
+    check_collisions(tiles["enemies"], 23, function() player:hurt(1) end)  -- spikes
     camera:update(player, dt)
 
     if won or crown_bar:check_complete(player.inventory.items["crown"]) then
