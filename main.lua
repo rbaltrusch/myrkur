@@ -140,7 +140,7 @@ function love.load()
         x=0,
         y=0,
         image=love.graphics.newImage("assets/crown.png"),
-        total_crowns_on_map=count_total_crowns_on_map(tiles["collectibles"].tiles)
+        total_crowns_on_map=count_total_crowns_on_map(tiles["collectibles"].tiles) - 1  -- 1 less for leniency
     }
 end
 
