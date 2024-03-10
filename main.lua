@@ -48,6 +48,7 @@ function love.load()
     WIDTH, HEIGHT = 480, 320
     WIN_WIDTH, WIN_HEIGHT = love.window.getDesktopDimensions()
     MAX_SCALING = DEFAULT_SCALING * math.min(WIN_WIDTH / WIDTH, WIN_HEIGHT / HEIGHT)
+    love.graphics.setDefaultFilter("nearest", "nearest")
     love.window.setIcon(love.image.newImageData("assets/runeM.png"))
 
     muted = false
@@ -116,6 +117,7 @@ function love.load()
     }
     camera = Camera.construct{x=0, y=0, speed_factor=2.5, width=WIDTH/DEFAULT_SCALING, height=HEIGHT/DEFAULT_SCALING}
     font = love.graphics.newFont("assets/KenneyPixel.ttf")
+    font:setFilter("nearest", "nearest")
 
     --shader = love.graphics.newShader(FileUtil.read_file("assets/shader/lighting.vert") or "")
     shader = love.graphics.newShader(require("src/shader"))
