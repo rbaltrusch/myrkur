@@ -1,3 +1,11 @@
 luafinding/
 assets/archive/
 dist/
+*build.py
+package.json
+package-lock.json
+node_modules/
+webbuild*
+version*
+*.love
+**/__pycache__/
