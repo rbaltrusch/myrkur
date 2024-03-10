@@ -4,7 +4,7 @@ Myrkur is a game in which you, a little powerless blue blob, explore an open wor
 
 This is a game jam entry for the 48h Kenney jam 2023, written in Lua with the Love library, and is hosted on itch.io [here](https://richardbaltrusch.itch.io/myrkur).
 
-![Gif of the gameplay](assets/gameplay_short.gif)
+![Gif of the gameplay](media/gameplay_short.gif)
 
 ## How to run
 
