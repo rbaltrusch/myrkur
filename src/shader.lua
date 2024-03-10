@@ -27,10 +27,10 @@ vec4 effect(vec4 color, Image image, vec2 uvs, vec2 texture_coords) {
 
     //float dist = distance(u_light_pos / u_resolution, texture_coords / u_resolution);
     vec2 middle = vec2(0.41, 0.51); // approximately where character is
-    float pulse = 0.03 * sin(u_time * 3);
+    float pulse = 0.03 * sin(u_time * 3.0);
     float dist = distance(middle, texture_coords / u_resolution);
-    float factor = 1 - pow(dist, u_lighting_dist + pulse);
-    float total_factor = factor * (1 - u_factor);
+    float factor = 1.0 - pow(dist, u_lighting_dist + pulse);
+    float total_factor = factor * (1.0 - u_factor);
     //float factor = (MAX_DIST - dist) / MAX_DIST;
 
     // special treatment for red for torch effect

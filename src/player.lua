@@ -184,23 +184,19 @@ function Player.construct(args)
         for x_offs = -1, 1 do
             for y_offs = -1, 1 do
                 local tile = tiles:get(x + x_offs, y + y_offs)
-                if tile == nil then
-                    goto continue
-                end
-
                 local tile_rect = TileMap.get_tile_rect(x + x_offs, y + y_offs, self.TILE_SIZE)
                 local player_rect = player:get_rect()
 
                 -- HACK - open doors
                 local DOOR = 539
-                if tile.index - 1 == DOOR and (self.inventory.items["key"] or 0) > 0 then
+                if tile and tile.index - 1 == DOOR and (self.inventory.items["key"] or 0) > 0 then
                     tiles.tiles[x + x_offs][y + y_offs] = nil -- remove door
                     self.unlock_sound:play()
                     self.inventory.items["key"] = self.inventory.items["key"] - 1
-                    goto continue
+                    tile = nil
                 end
 
-                if Collision.colliding(player_rect, tile_rect) then
+                if tile and Collision.colliding(player_rect, tile_rect) then
                     local speed_x = self.x - self.previous_x
                     local speed_y = self.y - self.previous_y
                     if speed_x ~= 0 then
@@ -222,7 +218,6 @@ function Player.construct(args)
                         end
                     end
                 end
-                ::continue::
             end
         end
     end

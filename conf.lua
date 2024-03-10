@@ -1,3 +1,5 @@
+IS_WEB = false
+
 function love.conf(table_)
     table_.window.height = 320
     table_.window.width = 480

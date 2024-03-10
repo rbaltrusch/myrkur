@@ -274,9 +274,9 @@ local function draw()
     --TileMap.render_tiles(tiles["decor"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
     --TileMap.render_tiles(tiles["collectibles"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT, x_offset)
     --TileMap.render_tiles(tiles["enemies"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
-    TileMap.render(tiles["terrain"].tiles, tileset, camera, TILE_SIZE)
-    TileMap.render(tiles["decor"].tiles, tileset, camera, TILE_SIZE)
-    TileMap.render(tiles["collectibles"].tiles, tileset, camera, TILE_SIZE, x_offset)
+    TileMap.render(tiles["terrain"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
+    TileMap.render(tiles["decor"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT)
+    TileMap.render(tiles["collectibles"].tiles, tileset, camera, TILE_SIZE, WIDTH, HEIGHT, x_offset)
     player:render(camera)
 
     for _, entity in ipairs(entities) do
@@ -331,7 +331,7 @@ function love.keypressed(key)
     elseif key == "m" then
         muted = not muted
         love.audio.setVolume(muted and 0 or 1)
-    elseif key == "escape" then
+    elseif key == "escape" and not IS_WEB then
         love.event.quit(0)
     end
 
@@ -362,16 +362,16 @@ local function handle_player_stop_walk(key)
         ["s"] = player.start_move_down,
     }
     for key_, _ in pairs(keys) do
-        if key_ ~= key then goto continue end
+        if key_ == key then
 
-        for key__, func in pairs(keys) do
-            if love.keyboard.isDown(key__) then
-                func(player)
-                return
+            for key__, func in pairs(keys) do
+                if love.keyboard.isDown(key__) then
+                    func(player)
+                    return
+                end
             end
         end
         player:stop()
-        ::continue::
     end
 end
 

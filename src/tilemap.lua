@@ -41,14 +41,13 @@ function TileMap.construct_tiles(tilemap, tileset)
     for _, layer in ipairs(tilemap.layers) do
         local name = layer.name
         for i, tile_index in ipairs(layer.data) do
-            -- skip empty tiles
-            if tile_index == 0 then goto continue end
+            if tile_index ~= 0 then -- skips empty tiles
     
-            i = i - 1
-            local x = i % width
-            local y = math.floor(i / width)
-            layers[name].tiles[x][y] = {index=tile_index, quad=tileset.quads[tile_index]}
-            ::continue::
+                i = i - 1
+                local x = i % width
+                local y = math.floor(i / width)
+                layers[name].tiles[x][y] = {index=tile_index, quad=tileset.quads[tile_index]}
+            end
         end
     end
 
@@ -60,53 +59,43 @@ function TileMap.construct_collision_map(tilemap, layer_name, passable_getter)
     local tiles = {}
     local width = tilemap.width
     for _, layer in ipairs(tilemap.layers) do
-        if layer.name ~= layer_name then goto continue end
-        for i = 0, tilemap.width do
-            tiles[i] = {}
+        if layer.name == layer_name then
+            for i = 0, tilemap.width do
+                tiles[i] = {}
+            end
+            for i, tile_index in ipairs(layer.data) do
+                local x = i % width
+                local y = math.floor(i / width)
+                tiles[x][y] = passable_getter(tile_index)
+            end
         end
-        for i, tile_index in ipairs(layer.data) do
-            local x = i % width
-            local y = math.floor(i / width)
-            tiles[x][y] = passable_getter(tile_index)
-        end
-        ::continue::
     end
     return tiles
 end
 
--- offset is optional
-function TileMap.render_tiles(tiles, tileset, camera, tilesize, width, height, y_offset)
-    y_offset = y_offset or 0
-    local tiles_min_x = camera.total_x / tilesize - 100
-    local tiles_min_y = camera.total_y / tilesize - 100
-    local tiles_max_x = (width + camera.total_x) / tilesize + 100
-    local tiles_max_y = (height + camera.total_y) / tilesize + 100
+-- function TileMap.render(tiles, tileset, camera, tilesize, y_offset)
+--     y_offset = y_offset or 0
+--     for x, col in pairs(tiles) do
+--         for y, tile in pairs(col) do
+--             local transform = love.math.newTransform(
+--                 x * tilesize - camera.total_x, y * tilesize - camera.total_y + y_offset
+--             )
+--             love.graphics.draw(tileset.image, tile.quad, transform)
+--         end
+--     end
+-- end
 
+function TileMap.render(tiles, tileset, camera, tilesize, width, height, y_offset)
+    tileset.sprite_batch:clear()
+    y_offset = (y_offset or 0) - camera.total_y
     for x, col in pairs(tiles) do
-        if x < tiles_min_x then goto continuex end
-        if x > tiles_max_x then break end
+        local x_transform = x * tilesize - camera.total_x
         for y, tile in pairs(col) do
-            if y < tiles_min_y or tile == nil then goto continuey end
-            if y > tiles_max_y then break end
-            local transform = love.math.newTransform(
-                x * tilesize - camera.total_x, y * tilesize - camera.total_y + y_offset
-            )
-            love.graphics.draw(tileset.image, tile.quad, transform)
-            ::continuey::
-        end
-        ::continuex::
-    end
-end
-
-function TileMap.render(tiles, tileset, camera, tilesize, y_offset)
-    y_offset = y_offset or 0
-    for x, col in pairs(tiles) do
-        for y, tile in pairs(col) do
-            local transform = love.math.newTransform(
-                x * tilesize - camera.total_x, y * tilesize - camera.total_y + y_offset
-            )
-            love.graphics.draw(tileset.image, tile.quad, transform)
-            ::continue::
+            local y_transform = y * tilesize + y_offset
+            if x_transform < width and y_transform < height and not tile.collected then
+                tileset.sprite_batch:add(tile.quad, x_transform, y_transform)
+            end
         end
     end
+    love.graphics.draw(tileset.sprite_batch)
 end
