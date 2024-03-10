@@ -41,6 +41,8 @@ end
 
 function love.load()
     --BACKGROUND_COLOUR = Colour.construct(71, 45, 60)
+    GHOST = 321
+    GRAVEYARD_PURGATORY = 591
     BACKGROUND_COLOUR = Colour.construct(0, 0, 0)
     TILE_SIZE = 16
     DEBUG_ENABLED = false
@@ -74,6 +76,9 @@ function love.load()
     rest_sound = love.audio.newSource("assets/rest.wav", "static")
     rest_sound:setVolume(0.5)
     rest_sound:setPitch(0.5)
+
+    ghost_death_sound = love.audio.newSource("assets/ghost_death.wav", "static")
+    ghost_death_sound:setVolume(0.75)
 
     local walk_sound = love.audio.newSource("assets/walk.wav", "static")
     walk_sound:setVolume(0.2)
@@ -123,7 +128,8 @@ function love.load()
     shader = love.graphics.newShader(require("src/shader"))
     tileset = SpriteSheet.load_sprite_sheet("assets/kenney_1-bit-pack/Tilesheet/colored_packed.png", TILE_SIZE, TILE_SIZE)
     tilemap = require "assets/map"
-    collision_map = TileMap.construct_collision_map(tilemap, "terrain")
+    collision_map = TileMap.construct_collision_map(tilemap, "terrain", function(tile_index) return tile_index == 0 end) -- passable if empty
+    ghost_collision_map = TileMap.construct_collision_map(tilemap, "terrain", function(tile_index) return true end) -- always passable
     tiles = TileMap.construct_tiles(tilemap, tileset)
     entities = Entity.construct_from_tilemap(
         tiles["enemies"].tiles,
@@ -206,7 +212,13 @@ local function update(dt)
     end
 
     for _, entity in ipairs(entities) do
-        entity:update(dt, player, collision_map)
+        local x, y = unpack(entity:get_current_tile())
+        local tile = tiles["terrain"]:get(x, y)
+        if not entity.dead and tile and tile.index == GRAVEYARD_PURGATORY and entity.tile.index == GHOST then
+            entity:die()
+            ghost_death_sound:play()
+        end
+        entity:update(dt, player, entity.tile.index == GHOST and ghost_collision_map or collision_map)
     end
 
     if not player:check_alive() then

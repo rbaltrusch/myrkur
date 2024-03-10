@@ -56,7 +56,7 @@ function TileMap.construct_tiles(tilemap, tileset)
 end
 
 -- for use with luafinding a 2d table of bools (passable or not)
-function TileMap.construct_collision_map(tilemap, layer_name)
+function TileMap.construct_collision_map(tilemap, layer_name, passable_getter)
     local tiles = {}
     local width = tilemap.width
     for _, layer in ipairs(tilemap.layers) do
@@ -67,7 +67,7 @@ function TileMap.construct_collision_map(tilemap, layer_name)
         for i, tile_index in ipairs(layer.data) do
             local x = i % width
             local y = math.floor(i / width)
-            tiles[x][y] = tile_index == 0 --passable if empty
+            tiles[x][y] = passable_getter(tile_index)
         end
         ::continue::
     end

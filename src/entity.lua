@@ -16,12 +16,17 @@ function Entity.construct(args)
         y = args.y,
         tile = args.tile,
         target = nil,
+        dead = false,
     }
 
     function entity.get_current_tile(self)
         local x = MathUtil.round(self.x / self.TILE_SIZE)
         local y = MathUtil.round(self.y / self.TILE_SIZE)
         return {x, y}
+    end
+
+    function entity.die(self)
+        self.dead = true
     end
 
     function entity.walk_to_target(self, current_tile, dt)
@@ -39,6 +44,10 @@ function Entity.construct(args)
     end
 
     function entity.update(self, dt, player, collision_map)
+        if self.dead then
+            return
+        end
+
         local current_tile = self:get_current_tile()
         if self.target then
             self:walk_to_target(current_tile, dt)
@@ -77,6 +86,10 @@ function Entity.construct(args)
     end
 
     function entity.render(self, camera)
+        if self.dead then
+            return
+        end
+
         local transform = love.math.newTransform(self.x - camera.total_x, self.y - camera.total_y)
         love.graphics.draw(self.tileset.image, self.tile.quad, transform)
         -- if self.walk_animation.ongoing then

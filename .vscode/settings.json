@@ -22,6 +22,8 @@
         "lighting_dist",
         "crown_bar",
         "rest_sound",
-        "won"
+        "won",
+        "ghost_collision_map",
+        "ghost_death_sound"
     ]
 }
