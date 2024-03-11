@@ -9,3 +9,4 @@ webbuild*
 version*
 *.love
 **/__pycache__/
+**/*.tiled-session
